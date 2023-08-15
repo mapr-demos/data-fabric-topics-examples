@@ -1,4 +1,3 @@
-/* Copyright (c) 2023 & onwards. Hewlett Packard Enterprise Company, All rights reserved */
 from kafka import KafkaProducer
 import sys
 import time
