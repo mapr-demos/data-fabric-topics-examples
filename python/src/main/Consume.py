@@ -1,12 +1,19 @@
+#Kafka-python consumer exmaple
 from kafka import KafkaConsumer
 import sys
 import time
 
+#Accepts user provided DataAccessGateway/Broker IP or hostname followed by a port number.
+#The IP address/hostname and port number are separted by a colon "<localhost:9092>".
 server = sys.argv[1]
-print("Broker: " + server)
+print("DataAccessGateway/Broker: " + server)
+
+#Accepts user provided one kafka topic name.
 topic = sys.argv[2]
 print("Topic:  " + topic)
 
+#Consumer consumes messages from the user provided topici from thei earliest message. 
+#Expected Output: List of all consumed messages.
 print("Starting Consumer")
 consumer = KafkaConsumer(bootstrap_servers=[server],
                          auto_offset_reset='earliest')
