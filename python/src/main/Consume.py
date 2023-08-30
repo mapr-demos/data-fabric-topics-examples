@@ -2,18 +2,34 @@
 from kafka import KafkaConsumer
 import sys
 import time
+import argparse
+import re
 
-#Accepts user provided DataAccessGateway/Broker IP or hostname followed by a port number.
-#The IP address/hostname and port number are separted by a colon "<localhost:9092>".
-server = sys.argv[1]
+# Parse all the user provided arguments
+parser = argparse.ArgumentParser(
+                    prog='python3 src/main/Consume.py',
+                    description='Consumes messages from a particular Kafka topic')
+parser.add_argument('-b', '--broker', help='host:port for the bootstrap server', required=True)
+parser.add_argument('-t', '--topic',  help='The kafka topic from which the messages are consumed', required=True)
+
+args = parser.parse_args()
+
+# Check the host:port format for the bootstrap server input.
+if not re.match("[^ :]+:\\d+", args.broker):
+    print("Hostname should be in the form host:port")
+    parser.print_help()
+    sys.exit()
+
+# User provided DataAccessGateway/Broker IP or hostname followed by a port number.
+server = args.broker
 print("DataAccessGateway/Broker: " + server)
 
-#Accepts user provided one kafka topic name.
-topic = sys.argv[2]
-print("Topic:  " + topic)
+# User provided kafka topic name is used to consume the messages.
+topic = args.topic
+print("Kafka Topic Name:  " + topic)
 
-#Consumer consumes messages from the user provided topici from thei earliest message. 
-#Expected Output: List of all consumed messages.
+# Consumer consumes messages from the user provided topic from the earliest message. 
+# Expected Output: List of all consumed messages.
 print("Starting Consumer")
 consumer = KafkaConsumer(bootstrap_servers=[server],
                          auto_offset_reset='earliest')
