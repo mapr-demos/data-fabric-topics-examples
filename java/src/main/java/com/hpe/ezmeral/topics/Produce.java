@@ -7,6 +7,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 public class Produce {
@@ -37,7 +38,10 @@ public class Produce {
     for (int msgIdx = 1; msgIdx <= msgCount; msgIdx++) {
       final String key = String.format("Key-%d", msgIdx);
       final String val = System.console().readLine(">");
-      producer.send(new ProducerRecord<>(topicName, key, val));
+      final ProducerRecord<String, String> record = new ProducerRecord<>(topicName, key, val);
+      record.headers().add("h1", new byte[] {1,2,3});
+      record.headers().add("h1", new byte[] {'x','y','z'});
+      producer.send(record);
     }
 
     producer.close();

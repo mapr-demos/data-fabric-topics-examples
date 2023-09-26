@@ -11,6 +11,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.header.Header;
+import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
 public class Consume {
@@ -42,7 +44,16 @@ public class Consume {
     while (forEver) {
       final ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
       for (final ConsumerRecord<String, String> record : records) {
-        System.out.printf("Msg received -> (Key = '%s', value = '%s').%n", record.key(), record.value());
+        System.out.printf("Msg received -> (Key = '%s', value = '%s').", record.key(), record.value());
+        final Headers headers = record.headers();
+        if (headers != null) {
+          System.out.printf("Headers [ ");
+          for (Header header : headers) {
+            System.out.printf("{key = '%s', value = '%s'} ", header.key(), header.value());
+          }
+          System.out.printf("]");
+        }
+        System.out.println();
       }
     }
 
